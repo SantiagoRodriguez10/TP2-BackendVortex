@@ -7,8 +7,8 @@ const getAssets = async (req, res) => {
         const connection = await getConnection()
         await connection.query('SELECT * FROM assets', 
         function (err, rows) 
-            { res.send(rows); 
-            console.log("result: ", rows); 
+        {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+        console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
         
     } catch (error) {
@@ -25,8 +25,8 @@ const getAssetsByEmployeeId = async (req,res) => {
         await connection.query('SELECT * FROM assets WHERE employee_id = ?',
         employee_id,
         function (err, rows) 
-            { res.send(rows); 
-            console.log("result: ", rows); 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
         
     } catch (error) {
@@ -43,8 +43,8 @@ const getAssetsById = async (req, res) => {
         await connection.query('SELECT * FROM assets WHERE assets_id = ?', 
         assets_id,
         function (err, rows) 
-            { res.send(rows); 
-            console.log("result: ", rows); 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
         
     } catch (error) {
@@ -63,9 +63,9 @@ const getPaginatedAssets = async (req, res) => {
         const connection = await getConnection()
 
         await connection.query(`SELECT * FROM assets LIMIT ${limit} OFFSET ${offset}`, 
-        function (err, result) 
-            { res.send(result); 
-            console.log("result: ", result); 
+        function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
     } catch (error) {
         res.status(500)
@@ -85,9 +85,9 @@ const addAsset = async (req, res) =>{
                 name, type, code, marca, description, purchase_date, assets_id, employee_id 
             }
             await connection.query('INSERT INTO assets SET ?', assets,
-            function (err, result) 
-            { res.send(result); 
-            console.log("result: ", result); 
+            function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
             })
         } catch (error) {
             res.status(500)
@@ -111,9 +111,9 @@ const updateAsset = async (req, res) => {
             name, type, code, marca, description, purchase_date
         }
         await connection.query('UPDATE assets SET ? WHERE assets_id = ? ', [assets, assets_id], 
-        function (err, result) 
-            { res.send(result); 
-            console.log("result: ", result); 
+        function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
     } catch (error) {
         res.status(404)
@@ -126,9 +126,23 @@ const deleteAsset = async (req, res) => {
         const { assets_id } = req.params
         const connection = await getConnection()
         await connection.query('DELETE FROM assets WHERE assets_id = ?', assets_id,
-        function (err, result) 
-            { res.send(result); 
-            console.log("result: ", result); 
+        function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
+        })
+    } catch (error) {
+        res.status(500)
+    }
+}
+
+const getFilterAsset = async (req, res) => {
+    try {
+        const type = req.query.type
+        const connection = await getConnection()
+        await connection.query('SELECT * FROM assets WHERE type = ?', type,
+        function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
     } catch (error) {
         res.status(500)
@@ -142,5 +156,6 @@ export const methods = {
     addAsset,
     updateAsset,
     deleteAsset,
-    getAssetsByEmployeeId
+    getAssetsByEmployeeId,
+    getFilterAsset
 }

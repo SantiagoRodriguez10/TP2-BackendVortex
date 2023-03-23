@@ -5,10 +5,13 @@ import { getConnection } from "../database/database.js"
 const getEmployees = async (req, res) => {
     try {
         const connection = await getConnection()
+        /* const result = await connection.query('SELECT * FROM employees') //ejecuto un query (una consulta sql) que sea un select creando asi una consulta directamente a la base de datos. Este es mi método GET
+        console.log(result);
+        res.status(200).json(result); */
         await connection.query('SELECT * FROM employees', 
         function (err, rows) 
-            { res.send(rows); 
-            console.log("result: ", rows); 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
         
     } catch (error) {
@@ -26,8 +29,8 @@ const getEmployeeById = async (req,res) => {
         await connection.query('SELECT * FROM employees WHERE employee_id = ?', 
         employee_id,
         function (err, rows) 
-            { res.send(rows); 
-            console.log("result: ", rows); 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
         
     } catch (error) {
@@ -46,9 +49,9 @@ const getPaginatedEmployees = async (req,res) => {
         const connection = await getConnection()
         
         await connection.query(`SELECT * FROM employees LIMIT ${limit} OFFSET ${offset}`, 
-        function (err, result) 
-            { res.send(result); 
-            console.log("result: ", result); 
+        function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
         
     } catch (error) {
@@ -69,10 +72,10 @@ const addEmployee = async (req, res) => {
                 first_name, last_name, cuit, join_date, rol, employee_id, team_id
             }
             await connection.query('INSERT INTO employees SET ?', employees, 
-            function (err, result) 
-            { res.send(result); 
-            console.log("result: ", result); 
-            })
+            function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
+        })
         
         } catch (error) {
             res.status(500)
@@ -96,9 +99,9 @@ const updateEmployee = async (req, res) => {
             first_name, last_name, cuit, join_date, rol, team_id
         }
         await connection.query('UPDATE employees SET ? WHERE employee_id = ? ', [employees, employee_id], 
-        function (err, result) 
-            { res.send(result); 
-            console.log("result: ", result); 
+        function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
     } catch (error) {
         res.status(400)
@@ -112,9 +115,23 @@ const deleteEmployee = async (req, res) => {
         const { employee_id } = req.params
         const connection = await getConnection()
         await connection.query('DELETE FROM employees WHERE employee_id = ?', employee_id,
-        function (err, result) 
-            { res.send(result); 
-            console.log("result: ", result); 
+        function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
+        })
+    } catch (error) {
+        res.status(500)
+    }
+}
+
+const getFilterEmployee = async (req,res) => {
+    try {
+        const rol = req.query.rol
+        const connection = await getConnection()
+        await connection.query('SELECT * FROM employees WHERE rol = ?', rol,
+        function (err, rows) 
+            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
+            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
         })
     } catch (error) {
         res.status(500)
@@ -127,5 +144,6 @@ export const methods = {
     getPaginatedEmployees,
     addEmployee,
     updateEmployee,
-    deleteEmployee
+    deleteEmployee,
+    getFilterEmployee
 }

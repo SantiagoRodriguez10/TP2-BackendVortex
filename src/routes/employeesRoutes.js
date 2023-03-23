@@ -6,9 +6,9 @@ const router = Router();
 router.get('/get', employeeController.getEmployees); 
 router.get('/get/:employee_id', employeeController.getEmployeeById);
 router.get('/pag', employeeController.getPaginatedEmployees)
+router.get('/filter', employeeController.getFilterEmployee)
 router.post('/add', employeeController.addEmployee)
 router.put('/update/:employee_id', employeeController.updateEmployee)
 router.delete('/delete/:employee_id', employeeController.deleteEmployee)
-
 
 export default router
