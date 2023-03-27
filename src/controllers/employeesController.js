@@ -73,8 +73,8 @@ const addEmployee = async (req, res) => {
             }
             await connection.query('INSERT INTO employees SET ?', employees, 
             function (err, rows) 
-            {res.send(Object.values(JSON.parse(JSON.stringify(rows)))) 
-            console.log(Object.values(JSON.parse(JSON.stringify(rows))))
+            {res.send((rows))
+            console.log((rows))
         })
         
         } catch (error) {
